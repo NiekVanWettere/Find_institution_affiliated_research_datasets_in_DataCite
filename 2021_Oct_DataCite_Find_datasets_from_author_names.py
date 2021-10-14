@@ -126,14 +126,14 @@ for i in range(len(source_df_list)):  # fetch author names
     else:
         print("Record {0} does not have correct input structure.".format(i)) # warning if the input structure does not adhere to the conditions listed above
 
-
+publication_year_input = input("\n\nInput here the dataset publication year that you want to examine:")
 
 DataCite_requests = []  # write out request URLs to DataCite API
 tracking_author = []
 for authors in range(len(source_df_list)):
     for author in range(len(source_df_list[authors])):
         if len(source_df_list[authors][author]) == 2:
-            DataCite_requests.append("https://api.datacite.org/dois?query=" + source_df_list[authors][author][0] + "+" + source_df_list[authors][author][1] + "+" + "publicationYear:2021")
+            DataCite_requests.append("https://api.datacite.org/dois?query=" + source_df_list[authors][author][0] + "+" + source_df_list[authors][author][1] + "+" + "publicationYear:" + publication_year_input)
             tracking_author.append((authors, author))
 
 df_look_up = pd.DataFrame(list(zip(DataCite_requests, tracking_author)), columns =['DataCite_requests', 'tracking_author']) # datframe with all potential requests, as well as index information that allows to track the author in the original input data, for example source_df_list[0][0] for tracking_author (0,0)
@@ -160,9 +160,7 @@ with open('Output_harvested_datasets_from_publication_author_names.csv', 'w') as
 with open('Output_harvested_datasets_from_publication_author_names_raw_metadata.txt', 'w') as myfile: # create file to write harvested DataCite metadata records
     wr = csv.writer(myfile, delimiter = ";")
     
-
-
-for result in range(len(DataCite_results)):    
+for result in range(len(DataCite_results)):
         
     if DataCite_results[result] != 'error': # DataCite requests that gave an error from the server, are excluded
         
